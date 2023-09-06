@@ -5,8 +5,8 @@ import Selector from '../component/selector/Selector';
 
 const App : React.FC = () => {
   return (
-    <div>tools inventory
-
+    <div>
+      tools inventory
         <Selector />
     </div>
   );
