@@ -13,13 +13,17 @@ const Selector : React.FC = () => {
     const [selectedItemID, setSelectedItemID] = useState<string[]>([]);
     const [updateParam, setUpdateParam] = useState<string>("");
     const [addParam, setAddParam] = useState<string>("");
-    const url : string = "https://tools-inventory-backend-1-d6f2b0c3a7ae.herokuapp.com/";
+    const url : string = "http://localhost:4567/";
+    const token = useAppSelector((state) => state.user.token);
 
     async function generateTable() {
         let searchBody : string | undefined = JSONStringBuilder(searchParam.split(","));;
         let requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization' : 'Bearer ' + token,
+        },
             body : (searchBody === undefined) ? "{}" : searchBody,
         }
         let dataPromise = fetch(url + `tools/search`, requestOptions)
@@ -32,7 +36,7 @@ const Selector : React.FC = () => {
     }
 
     async function getAllData() {
-        let dataPromise = fetch(url + `tools`)
+        let dataPromise = fetch(url + `tools`, {headers : {'Authorization' : 'Bearer ' + token}})
         .then(response => response.json())
         .then((parsedData) => {
             const toolData = parsedData.tools;
@@ -59,7 +63,10 @@ const Selector : React.FC = () => {
         let updatedObj : object = JSON.parse(temp);
         const requestOptions = {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization' : 'Bearer ' + token,
+            },
             body : JSON.stringify(updatedObj),
         };
         let dataPromise = fetch(url+ `tools/${selectedItemID}`, requestOptions)
@@ -70,7 +77,8 @@ const Selector : React.FC = () => {
         }).catch((error) => {alert(error)});
     }
     
-    async function bulkUpdateTool(){
+    async function bulkUpdateTool(){ 
+        // TODO : implement bulk update
     }
 
     async function addTool(){
@@ -86,7 +94,10 @@ const Selector : React.FC = () => {
         if (temp === undefined) return;
         let requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization' : 'Bearer ' + token,
+            },
             body : temp,
         };
         let addToolPromise = fetch(url + "tools",requestOptions)
@@ -98,7 +109,7 @@ const Selector : React.FC = () => {
     }
 
     async function deleteTool(){
-        let deleteToolPromise = fetch(url + `tools/${selectedItemID[0]}`, {method : 'DELETE'})
+        let deleteToolPromise = fetch(url + `tools/${selectedItemID[0]}`, {method : 'DELETE', headers : {'Authorization' : 'Bearer ' + token}})
         .then(response => response.json())
         .then((parsedData) => {
             if (parameter !== "" && value !== "") generateTable();
