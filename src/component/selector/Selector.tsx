@@ -36,12 +36,16 @@ const Selector : React.FC = () => {
     }
 
     async function getAllData() {
-        let dataPromise = fetch(url + `tools`, {headers : {'Authorization' : 'Bearer ' + token}})
-        .then(response => response.json())
-        .then((parsedData) => {
-            const toolData = parsedData.tools;
-            setData(toolData);
-        }).catch((error) => {alert(error)});
+        try {
+            let dataPromise = fetch(url + `tools`, {headers : {'Authorization' : 'Bearer ' + token}})
+            .then(response => response.json())
+            .then((parsedData) => {
+                const toolData = parsedData.tools;
+                setData(toolData);
+            }).catch((error) => {alert("unable to fetch or invalid token")});
+        } catch (error) {
+            alert("login first");
+        }
     }
 
     function JSONStringBuilder(value : string[]) : string | undefined {

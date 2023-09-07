@@ -9,7 +9,6 @@ import Login from '../container/Login/Login';
 const App : React.FC = () => {
   return (
     <div>
-      
       <Router>
         <Link to='/toolview'>toolview</Link>
         <Link to='/login'>login</Link>
