@@ -13,7 +13,7 @@ const Selector : React.FC = () => {
     const [selectedItemID, setSelectedItemID] = useState<string[]>([]);
     const [updateParam, setUpdateParam] = useState<string>("");
     const [addParam, setAddParam] = useState<string>("");
-    const url = process.env.serverURL
+    const url : string = "https://tools-inventory-backend-1-d6f2b0c3a7ae.herokuapp.com/";
 
     async function generateTable() {
         let searchBody : string | undefined = JSONStringBuilder(searchParam.split(","));;
@@ -22,7 +22,7 @@ const Selector : React.FC = () => {
             headers: { 'Content-Type': 'application/json' },
             body : (searchBody === undefined) ? "{}" : searchBody,
         }
-        let dataPromise = fetch("http://localhost:4567/" + `tools/search`, requestOptions)
+        let dataPromise = fetch(url + `tools/search`, requestOptions)
         .then(response => response.json())
         .then((parsedData) => {
             const toolData = parsedData.tool;
@@ -32,7 +32,7 @@ const Selector : React.FC = () => {
     }
 
     async function getAllData() {
-        let dataPromise = fetch("http://localhost:4567/tools")
+        let dataPromise = fetch(url + `tools`)
         .then(response => response.json())
         .then((parsedData) => {
             const toolData = parsedData.tools;
@@ -62,10 +62,10 @@ const Selector : React.FC = () => {
             headers: { 'Content-Type': 'application/json' },
             body : JSON.stringify(updatedObj),
         };
-        let dataPromise = fetch("http://localhost:4567/" + `tools/${selectedItemID}`, requestOptions)
+        let dataPromise = fetch(url+ `tools/${selectedItemID}`, requestOptions)
         .then(response => response.json())
         .then((parsedData) => {
-            if (parameter != "" && value != "") generateTable();
+            if (parameter !== "" && value !== "") generateTable();
             else getAllData();
         }).catch((error) => {alert(error)});
     }
@@ -89,19 +89,19 @@ const Selector : React.FC = () => {
             headers: { 'Content-Type': 'application/json' },
             body : temp,
         };
-        let addToolPromise = fetch("http://localhost:4567/tools",requestOptions)
+        let addToolPromise = fetch(url + "tools",requestOptions)
         .then(response => response.json())
         .then((parsedData) => {
-            if (parameter != "" && value != "") generateTable();
+            if (parameter !== "" && value !== "") generateTable();
             else getAllData();
         }).catch((error) => {alert(error)});
     }
 
     async function deleteTool(){
-        let deleteToolPromise = fetch("http://localhost:4567/" + `tools/${selectedItemID[0]}`, {method : 'DELETE'})
+        let deleteToolPromise = fetch(url + `tools/${selectedItemID[0]}`, {method : 'DELETE'})
         .then(response => response.json())
         .then((parsedData) => {
-            if (parameter != "" && value != "") generateTable();
+            if (parameter !== "" && value !== "") generateTable();
             else getAllData();
         }).catch((error) => {alert(error)});
     }
