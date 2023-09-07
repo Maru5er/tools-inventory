@@ -13,7 +13,7 @@ const Selector : React.FC = () => {
     const [selectedItemID, setSelectedItemID] = useState<string[]>([]);
     const [updateParam, setUpdateParam] = useState<string>("");
     const [addParam, setAddParam] = useState<string>("");
-    const url : string = "http://localhost:4567/";
+    const url : string = "https://tools-inventory-backend-1-d6f2b0c3a7ae.herokuapp.com/";
     const token = useAppSelector((state) => state.user.token);
 
     async function generateTable() {

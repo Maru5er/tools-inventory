@@ -7,7 +7,7 @@ const LoginComponent : React.FC = () => {
     const dispatch = useAppDispatch();
     const [username, setLocalUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-    const url = "http://localhost:4567/user/";
+    const url = "https://tools-inventory-backend-1-d6f2b0c3a7ae.herokuapp.com/user/";
     const token : string = useAppSelector((state) => state.user.token);
 
     async function login() {
