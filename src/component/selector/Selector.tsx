@@ -3,6 +3,10 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { setParameter, setValue } from "./selectorSlice";
 import Table from "react-bootstrap/Table";
 import { ITool } from "./toolInterface";
+import Cookies from "universal-cookie";
+//import 'bootstrap/dist/css/bootstrap.min.css';
+import './Selector.css';
+import axios from "axios";
 
 const Selector : React.FC = () => {
     const dispatch = useAppDispatch();
@@ -13,9 +17,12 @@ const Selector : React.FC = () => {
     const [selectedItemID, setSelectedItemID] = useState<string[]>([]);
     const [updateParam, setUpdateParam] = useState<string>("");
     const [addParam, setAddParam] = useState<string>("");
-    const url : string = "https://tools-inventory-backend-1-d6f2b0c3a7ae.herokuapp.com/";
-    const token = useAppSelector((state) => state.user.token);
 
+    //clicked item
+    const [activeRow, setActiveRow] = useState<string[]>([]);
+    const url : string = "http://localhost:4567/";
+    const cookies = new Cookies();
+    const token = cookies.get('token');
     async function generateTable() {
         let searchBody : string | undefined = JSONStringBuilder(searchParam.split(","));;
         let requestOptions = {
@@ -36,6 +43,7 @@ const Selector : React.FC = () => {
     }
 
     async function getAllData() {
+        console.log(token);
         try {
             let dataPromise = fetch(url + `tools`, {headers : {'Authorization' : 'Bearer ' + token}})
             .then(response => response.json())
@@ -65,15 +73,19 @@ const Selector : React.FC = () => {
         let temp : string | undefined = JSONStringBuilder(updateData);
         if (temp === undefined) return;
         let updatedObj : object = JSON.parse(temp);
+        let bodyData : object = {
+            ids : activeRow,
+            updateParams : updatedObj,
+        }
         const requestOptions = {
             method: 'PUT',
             headers: { 
                 'Content-Type': 'application/json',
                 'Authorization' : 'Bearer ' + token,
             },
-            body : JSON.stringify(updatedObj),
+            body : JSON.stringify(bodyData),
         };
-        let dataPromise = fetch(url+ `tools/${selectedItemID}`, requestOptions)
+        let dataPromise = fetch(url+ `tools/update`, requestOptions)
         .then(response => response.json())
         .then((parsedData) => {
             if (parameter !== "" && value !== "") generateTable();
@@ -81,9 +93,6 @@ const Selector : React.FC = () => {
         }).catch((error) => {alert(error)});
     }
     
-    async function bulkUpdateTool(){ 
-        // TODO : implement bulk update
-    }
 
     async function addTool(){
         let toolBody : string[] = addParam.split(",");
@@ -112,14 +121,34 @@ const Selector : React.FC = () => {
         }).catch((error) => {alert(error)});
     }
 
+
     async function deleteTool(){
-        let deleteToolPromise = fetch(url + `tools/${selectedItemID[0]}`, {method : 'DELETE', headers : {'Authorization' : 'Bearer ' + token}})
+        const deleteItems = {
+            ids : activeRow
+        }
+        let deleteItemsString = JSON.stringify(deleteItems);
+        const requestOptions = {
+            method: 'POST',
+            headers : { 'Content-Type' : 'application/json',
+                        'Authorization' : 'Bearer ' + token,
+                       },
+            body : deleteItemsString,
+        }
+        let deleteToolPromise = fetch(url + `tools/delete`, requestOptions)
         .then(response => response.json())
         .then((parsedData) => {
             if (parameter !== "" && value !== "") generateTable();
             else getAllData();
         }).catch((error) => {alert(error)});
     }
+
+    function toggleActive(i :  string) {
+        if (activeRow.includes(i)) {
+            setActiveRow(activeRow.filter((item) => item !== i));
+        } else {
+            setActiveRow([...activeRow, i]);
+        }
+    } 
 
     useEffect(() => {
         getAllData();
@@ -142,12 +171,6 @@ const Selector : React.FC = () => {
                             setSearchParam(e.target.value);
                         }}
                 />
-             <input type="text" name = "value" placeholder="value" 
-                    onChange={
-                        (e) => {
-                            dispatch(setValue(e.target.value));
-                        }
-             }/>
             </div>
             <div id="search-button">
                 <button onClick={
@@ -156,7 +179,7 @@ const Selector : React.FC = () => {
                     }
                 }>search</button>
             </div>
-            <p>selected item id: {selectedItemID}</p>
+            <p>selected item id: {activeRow}</p>
             <button onClick={() => deleteTool()}>delete</button>
             <h3>Update Item</h3>
             <div id="update-parameter">
@@ -166,10 +189,9 @@ const Selector : React.FC = () => {
                 <button onClick={() => {
                     updateTool();
                 }}>update</button>
-                <button onClick = {() => bulkUpdateTool()}>bulk update</button>
             </div>
-            <Table striped bordered hover>
-                <thead>
+            <Table bordered = {true}>
+                <thead className="table-border">
                     <tr>
                         <th>name</th>
                         <th>code</th>
@@ -183,15 +205,21 @@ const Selector : React.FC = () => {
                 </thead>
                 <tbody>
                     {data && data.map((item) => (
-                        <tr onClick= {() => setSelectedItemID([item._id])} key={item._id}>
-                            <td>{item.name}</td>
-                            <td>{item.code}</td>
-                            <td>{item.diameter}</td>
-                            <td>{item.size}</td>
-                            <td>{item.angle}</td>
-                            <td>{item.status && item.status}</td>
-                            <td>{item.dateIn && item.dateIn.toString()}</td>
-                            <td>{item.dateOut && item.dateOut.toString()}</td>
+                        <tr
+                            id={activeRow.includes(item._id) ? "selected" : "not-selected"}
+                            onClick= {() =>  {
+                                            setSelectedItemID([item._id]);
+                                            toggleActive(item._id);
+                                            }}
+                            key={item._id}>
+                            <td >{item.name}</td>
+                            <td >{item.code}</td>
+                            <td >{item.diameter}</td>
+                            <td >{item.size}</td>
+                            <td >{item.angle}</td>
+                            <td >{item.status && item.status}</td>
+                            <td >{item.dateIn && item.dateIn.toString()}</td>
+                            <td >{item.dateOut && item.dateOut.toString()}</td>
                         </tr>
                     ))}
                 </tbody>

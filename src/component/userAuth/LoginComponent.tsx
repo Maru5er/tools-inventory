@@ -2,14 +2,15 @@ import React from "react";
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { setUsername, setToken } from "./userSlice";
-import {cookie, setCookie} from "react-cookies";
+import Cookies from "universal-cookie";
 
 const LoginComponent : React.FC = () => {
     const dispatch = useAppDispatch();
     const [username, setLocalUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-    const url = "http://localhost:4567/";
+    const url = "http://localhost:4567/user/";
     const token : string = useAppSelector((state) => state.user.token);
+    const cookies = new Cookies();
 
     async function login() {
         const requestOptions = {
@@ -23,8 +24,9 @@ const LoginComponent : React.FC = () => {
         let dataPromise = fetch(url + "login", requestOptions)
         .then(response => response.json())
         .then((parsedData) => {
-            if (parsedData.token) {
-                console.log(parsedData.token);
+            if (parsedData && parsedData.username === username) {
+                cookies.set('token', parsedData.token, { path: '/' });
+                dispatch(setUsername(username));
                 dispatch(setToken(parsedData.token));
             } else {
                 alert("invalid username or password");
