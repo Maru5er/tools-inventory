@@ -2,12 +2,13 @@ import React from "react";
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { setUsername, setToken } from "./userSlice";
+import {cookie, setCookie} from "react-cookies";
 
 const LoginComponent : React.FC = () => {
     const dispatch = useAppDispatch();
     const [username, setLocalUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-    const url = "https://tools-inventory-backend-1-d6f2b0c3a7ae.herokuapp.com/user/";
+    const url = "http://localhost:4567/";
     const token : string = useAppSelector((state) => state.user.token);
 
     async function login() {
