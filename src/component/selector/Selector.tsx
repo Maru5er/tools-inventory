@@ -179,7 +179,6 @@ const Selector : React.FC = () => {
                     }
                 }>search</button>
             </div>
-            <p>selected item id: {activeRow}</p>
             <button onClick={() => deleteTool()}>delete</button>
             <h3>Update Item</h3>
             <div id="update-parameter">
