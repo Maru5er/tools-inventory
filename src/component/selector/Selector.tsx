@@ -197,8 +197,8 @@ const Selector : React.FC = () => {
                         <th>diameter</th>
                         <th>size</th>
                         <th>angle</th>
-                        <th>Status</th>
                         <th>Material</th>
+                        <th>Status</th>
                         <th>Date in</th>
                         <th>Date out</th>
                     </tr>
