@@ -216,6 +216,7 @@ const Selector : React.FC = () => {
                             <td >{item.diameter}</td>
                             <td >{item.size}</td>
                             <td >{item.angle}</td>
+                            <td>{item.material && item.material}</td>
                             <td >{item.status && item.status}</td>
                             <td >{item.dateIn && item.dateIn.toString()}</td>
                             <td >{item.dateOut && item.dateOut.toString()}</td>

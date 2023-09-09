@@ -5,6 +5,7 @@ export interface ITool {
     angle : number,
     diameter : number,
     size : number,
+    material : string,
     dateIn : Date,
     dateOut : Date,
     status : string,
