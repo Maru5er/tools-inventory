@@ -20,7 +20,7 @@ const Selector : React.FC = () => {
 
     //clicked item
     const [activeRow, setActiveRow] = useState<string[]>([]);
-    const url : string = "https://tools-inventory-backend-1-d6f2b0c3a7ae.herokuapp.com/";
+    const url : string = `${process.env.REACT_APP_SERVER_URL}`;
     const cookies = new Cookies();
     const token = cookies.get('token');
     async function generateTable() {

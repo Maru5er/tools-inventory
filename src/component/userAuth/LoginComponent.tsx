@@ -8,7 +8,8 @@ const LoginComponent : React.FC = () => {
     const dispatch = useAppDispatch();
     const [username, setLocalUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-    const url = "https://tools-inventory-backend-1-d6f2b0c3a7ae.herokuapp.com/user/";
+    const url = `${process.env.REACT_APP_SERVER_URL}user/`;
+    console.log(url);
     const token : string = useAppSelector((state) => state.user.token);
     const cookies = new Cookies();
 
