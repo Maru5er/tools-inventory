@@ -96,7 +96,7 @@ const Selector : React.FC = () => {
 
     async function addTool(){
         let toolBody : string[] = addParam.split(",");
-        const keys : string[] = ["name", "code", "diameter", "size", "angle", "material", "status", "dateIn", "dateOut"];
+        const keys : string[] = ["name", "code", "diameter", "size", "angle", "material", "status", "dateIn", "dateOut", "height", "machine", "description"];
         let JSONtoStringArray : string[] = [];
         for (let i = 0; i < toolBody.length; i++){
             JSONtoStringArray.push(keys[i]);
@@ -217,10 +217,13 @@ const Selector : React.FC = () => {
                             <td >{item.diameter}</td>
                             <td >{item.size}</td>
                             <td >{item.angle}</td>
-                            <td>{item.material && item.material}</td>
+                            <td >{item.material && item.material}</td>
+                            <td >{item.height && item.height}</td>
                             <td >{item.status && item.status}</td>
+                            <td >{item.machine && item.machine}</td>
                             <td >{item.dateIn && item.dateIn.toString()}</td>
                             <td >{item.dateOut && item.dateOut.toString()}</td>
+                            <td >{item.description && item.description}</td>
                         </tr>
                     ))}
                 </tbody>

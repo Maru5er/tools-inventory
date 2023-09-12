@@ -6,7 +6,10 @@ export interface ITool {
     diameter : number,
     size : number,
     material : string,
+    height : number,
+    machine : string,
     dateIn : Date,
     dateOut : Date,
     status : string,
+    description : string,
 }
