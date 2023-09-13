@@ -49,7 +49,7 @@ const Selector : React.FC = () => {
     const [selectedItemID, setSelectedItemID] = useState<string[]>([]);
     const [updateParam, setUpdateParam] = useState<string>("");
     const [addParam, setAddParam] = useState<string>("");
-    const [entry, setEntry] = useState<EntryI>(initialEntry);
+    let entry : EntryI = initialEntry;
 
     //clicked item
     const [activeRow, setActiveRow] = useState<string[]>([]);
@@ -187,13 +187,12 @@ const Selector : React.FC = () => {
         getAllData();
     },[]);
 
+
     function entryBuilder(entryParam : string) {
-        console.log("entry builder")
         const keys : string[] = ["name", "code", "diameter", "size", "angle", "material","height", "status", "machine", "description", "dateIn", "dateOut"];
         let addEntries : string[] = entryParam.split(",");
         for (let i = 0; i < addEntries.length; i++){
-            setEntry({...entry, [keys[i]] : addEntries[i]});
-            console.log(entry);
+            entry[keys[i] as keyof EntryI] = addEntries[i];
         }
     }
 
@@ -206,7 +205,7 @@ const Selector : React.FC = () => {
                     <p className="search-item-text">{keys[i]}: </p>
                     <input className="search-item" placeholder={keys[i]} value={entry[keys[i] as keyof EntryI]} 
                     onChange={(e) => {
-                        setEntry({...entry, [keys[i]] : e.target.value});
+                        entry[keys[i] as keyof EntryI] = e.target.value;
                     }}/>
                 </div>
             );
@@ -221,29 +220,30 @@ const Selector : React.FC = () => {
                 <input className="top-search" type="text" name = "addTool" placeholder="name,code,diameter,size,angle,status,in,out" id="addTopEntry"
                 onChange={(e) => {
                     setAddParam(e.target.value);
-                    entryBuilder((document.getElementById("addTopEntry") as HTMLInputElement).value);
+                    entry = initialEntry;
+                    entryBuilder(e.target.value);
                 }}/>
                 {generateEntriesJSX()}
 
                 <button className="add-button" onClick={() => addTool()}>Add</button>
             </div>
-            <h3>search tools inventory</h3>
+            
             <div className="search-container">
-                <input type="text" name = "parameter" placeholder="parameter"
+                <h3 className="search-label">search tools inventory</h3>
+                <input type="text" name = "parameter" placeholder="parameter" className="search-input"
                     onChange= {
                         (e) => {
                             setSearchParam(e.target.value);
                         }}
                 />
-            </div>
-            <div id="search-button">
-                <button onClick={
+                <button className="search-button" onClick={
                     () => {
                         console.log(generateTable());
                     }
                 }>search</button>
+                <button className="delete-button" onClick={() => deleteTool()}>delete</button>
             </div>
-            <button onClick={() => deleteTool()}>delete</button>
+            
             <h3>Update Item</h3>
             <div id="update-parameter">
                 <input type="text" name = "parameter" placeholder="parameter"
