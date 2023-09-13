@@ -104,3 +104,38 @@ th, td {
     height: 35px;
     flex-shrink: 0;
 }
+
+.update-container {
+    display: flex;
+    width: 400px;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    gap: 15px 13px;
+    flex-wrap: wrap;
+    padding: 16px 0px;
+}
+
+.update-label {
+    width: 133px;
+    height: 20px;
+    flex-shrink:0;
+    color: #000;
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.update-input-box {
+    width: 229px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.update-button {
+    width: 177px;
+    height: 41px;
+    flex-shrink: 0;
+}
