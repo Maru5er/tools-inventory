@@ -8,6 +8,38 @@ import Cookies from "universal-cookie";
 import './Selector.css';
 import axios from "axios";
 
+
+interface EntryI {
+    name : string,
+    code : string,
+    diameter : string,
+    size : string, 
+    angle: string,
+    material : string,
+    height : string,
+    status : string,
+    machine : string,
+    description : string,
+    dateIn : string,
+    dateOut : string,
+}
+
+const initialEntry = {
+    name : "",
+    code : "",
+    diameter : "",
+    size : "",
+    angle : "",
+    material : "",
+    height : "",
+    status : "",
+    machine : "",
+    description : "",
+    dateIn : "",
+    dateOut : "",
+}
+
+
 const Selector : React.FC = () => {
     const dispatch = useAppDispatch();
     const parameter : string = useAppSelector((state) => state.selector.parameter);
@@ -17,6 +49,7 @@ const Selector : React.FC = () => {
     const [selectedItemID, setSelectedItemID] = useState<string[]>([]);
     const [updateParam, setUpdateParam] = useState<string>("");
     const [addParam, setAddParam] = useState<string>("");
+    const [entry, setEntry] = useState<EntryI>(initialEntry);
 
     //clicked item
     const [activeRow, setActiveRow] = useState<string[]>([]);
@@ -96,7 +129,7 @@ const Selector : React.FC = () => {
 
     async function addTool(){
         let toolBody : string[] = addParam.split(",");
-        const keys : string[] = ["name", "code", "diameter", "size", "angle", "material", "status", "dateIn", "dateOut", "height", "machine", "description"];
+        const keys : string[] = ["name", "code", "diameter", "size", "angle", "material","height", "status", "machine", "description", "dateIn", "dateOut"];
         let JSONtoStringArray : string[] = [];
         for (let i = 0; i < toolBody.length; i++){
             JSONtoStringArray.push(keys[i]);
@@ -154,17 +187,48 @@ const Selector : React.FC = () => {
         getAllData();
     },[]);
 
+    function entryBuilder(entryParam : string) {
+        console.log("entry builder")
+        const keys : string[] = ["name", "code", "diameter", "size", "angle", "material","height", "status", "machine", "description", "dateIn", "dateOut"];
+        let addEntries : string[] = entryParam.split(",");
+        for (let i = 0; i < addEntries.length; i++){
+            setEntry({...entry, [keys[i]] : addEntries[i]});
+            console.log(entry);
+        }
+    }
+
+    function generateEntriesJSX() : JSX.Element[] {
+        const keys : string[] = ["name", "code", "diameter", "size", "angle", "material","height", "status", "machine", "description", "dateIn", "dateOut"];
+        let entries : JSX.Element[] = [];
+        for (let i = 0; i < keys.length; i++){
+            entries.push(
+                <div>
+                    <p className="search-item-text">{keys[i]}: </p>
+                    <input className="search-item" placeholder={keys[i]} value={entry[keys[i] as keyof EntryI]} 
+                    onChange={(e) => {
+                        setEntry({...entry, [keys[i]] : e.target.value});
+                    }}/>
+                </div>
+            );
+        }
+        return entries;
+    }
+
     return (
-        <div>
-            <h3>Add tool</h3>
-            <div>
-                {addParam}
-                <input type="text" name = "addTool" placeholder="name,code,diameter,size,angle,status,in,out"
-                onChange={(e) => setAddParam(e.target.value) }/>
-                <button onClick={() => addTool()}>Add</button>
+        <div>  
+            <div className="add-container">
+                <h3 className="top-search-text">Add tool</h3>
+                <input className="top-search" type="text" name = "addTool" placeholder="name,code,diameter,size,angle,status,in,out" id="addTopEntry"
+                onChange={(e) => {
+                    setAddParam(e.target.value);
+                    entryBuilder((document.getElementById("addTopEntry") as HTMLInputElement).value);
+                }}/>
+                {generateEntriesJSX()}
+
+                <button className="add-button" onClick={() => addTool()}>Add</button>
             </div>
             <h3>search tools inventory</h3>
-            <div id="selection-parameter">
+            <div className="search-container">
                 <input type="text" name = "parameter" placeholder="parameter"
                     onChange= {
                         (e) => {
@@ -198,9 +262,12 @@ const Selector : React.FC = () => {
                         <th>size</th>
                         <th>angle</th>
                         <th>Material</th>
+                        <th>Height</th>
                         <th>Status</th>
+                        <th>Machine</th>
                         <th>Date in</th>
                         <th>Date out</th>
+                        <th>Description</th>
                     </tr>
                 </thead>
                 <tbody>
