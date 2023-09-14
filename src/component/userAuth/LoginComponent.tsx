@@ -76,7 +76,7 @@ const LoginComponent : React.FC = () => {
                 
                 }>Login</button>
             {globalUsername && (
-                <Navigate to="/tools" />
+                <Navigate to="/toolview" />
             ) }
             </div>
         
