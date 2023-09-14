@@ -104,3 +104,15 @@ th, td {
     height: 35px;
     flex-shrink: 0;
 }
+
+.table-container {
+    display: flex;
+    width: 354px;
+    height: 124px;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    gap: 10px 21px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+}
