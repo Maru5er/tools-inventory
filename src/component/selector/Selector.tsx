@@ -49,7 +49,7 @@ const Selector : React.FC = () => {
     const [selectedItemID, setSelectedItemID] = useState<string[]>([]);
     const [updateParam, setUpdateParam] = useState<string>("");
     const [addParam, setAddParam] = useState<string>("");
-    let entry : EntryI = initialEntry;
+    const [entry, setEntry] = useState<EntryI>(initialEntry);
 
     //clicked item
     const [activeRow, setActiveRow] = useState<string[]>([]);
@@ -128,23 +128,14 @@ const Selector : React.FC = () => {
     
 
     async function addTool(){
-        let toolBody : string[] = addParam.split(",");
-        const keys : string[] = ["name", "code", "diameter", "size", "angle", "material","height", "status", "machine", "description", "dateIn", "dateOut"];
-        let JSONtoStringArray : string[] = [];
-        for (let i = 0; i < toolBody.length; i++){
-            JSONtoStringArray.push(keys[i]);
-            JSONtoStringArray.push(toolBody[i]);
-        }
-        let temp : string | undefined = JSONStringBuilder(JSONtoStringArray);
-        console.log(temp);
-        if (temp === undefined) return;
+        
         let requestOptions = {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',
                 'Authorization' : 'Bearer ' + token,
             },
-            body : temp,
+            body : JSON.stringify(entry),
         };
         let addToolPromise = fetch(url + "tools",requestOptions)
         .then(response => response.json())
@@ -191,9 +182,15 @@ const Selector : React.FC = () => {
     function entryBuilder(entryParam : string) {
         const keys : string[] = ["name", "code", "diameter", "size", "angle", "material","height", "status", "machine", "description", "dateIn", "dateOut"];
         let addEntries : string[] = entryParam.split(",");
+        const entryTemp : EntryI = {} as EntryI;
         for (let i = 0; i < addEntries.length; i++){
-            entry[keys[i] as keyof EntryI] = addEntries[i];
+            entryTemp[keys[i] as keyof EntryI] = addEntries[i] as EntryI[keyof EntryI];
         }
+        return entryTemp;
+    }
+
+    function handleSmallEntryChange(e : string, key:string) {
+        setEntry({...entry, [key] : e});
     }
 
     function generateEntriesJSX() : JSX.Element[] {
@@ -203,9 +200,9 @@ const Selector : React.FC = () => {
             entries.push(
                 <div>
                     <p className="search-item-text">{keys[i]}: </p>
-                    <input className="search-item" placeholder={keys[i]} value={entry[keys[i] as keyof EntryI]} 
+                    <input className="search-item" placeholder={keys[i]} value={(entry[keys[i] as keyof EntryI])? entry[keys[i] as keyof EntryI] : ""} 
                     onChange={(e) => {
-                        entry[keys[i] as keyof EntryI] = e.target.value;
+                        handleSmallEntryChange(e.target.value, keys[i]);
                     }}/>
                 </div>
             );
@@ -220,8 +217,7 @@ const Selector : React.FC = () => {
                 <input className="top-search" type="text" name = "addTool" placeholder="name,code,diameter,size,angle,status,in,out" id="addTopEntry"
                 onChange={(e) => {
                     setAddParam(e.target.value);
-                    entry = initialEntry;
-                    entryBuilder(e.target.value);
+                    setEntry(entryBuilder(e.target.value));
                 }}/>
                 {generateEntriesJSX()}
 
@@ -243,22 +239,22 @@ const Selector : React.FC = () => {
                 }>search</button>
                 <button className="delete-button" onClick={() => deleteTool()}>delete</button>
             </div>
-
-            <h3>Update Item</h3>
-            <div id="update-parameter">
-                <input type="text" name = "parameter" placeholder="parameter"
-                onChange={(e) => setUpdateParam(e.target.value) }/>
-                <br/>
-                <button onClick={() => {
+            
+            <div className="update-container">
+                <p className="update-label">Update params</p>
+                <input type="text" name = "parameter" placeholder="parameter" className="update-input-box"/>
+                <button className="update-button" onClick={() => {
                     updateTool();
-                }}>update</button>
+                }}>Update</button>
             </div>
             <div className="table-container">
-                <Table bordered = {true}>
+                <Table bordered = {true} className="table">
                     <thead className="table-border">
                         <tr>
-                            <th>name</th>
-                            <th>code</th>
+                            <div className="sticky">
+                                <th>name</th>
+                                <th>code</th>
+                            </div>
                             <th>diameter</th>
                             <th>size</th>
                             <th>angle</th>
@@ -280,8 +276,10 @@ const Selector : React.FC = () => {
                                                 toggleActive(item._id);
                                                 }}
                                 key={item._id}>
-                                <td >{item.name}</td>
-                                <td >{item.code}</td>
+                                <div className="sticky">
+                                    <td className="sticky">{item.name}</td>
+                                    <td className="sticky">{item.code}</td>
+                                </div>
                                 <td >{item.diameter}</td>
                                 <td >{item.size}</td>
                                 <td >{item.angle}</td>
