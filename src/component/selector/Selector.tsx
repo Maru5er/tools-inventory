@@ -252,48 +252,55 @@ const Selector : React.FC = () => {
                     updateTool();
                 }}>Update</button>
             </div>
-            <Table bordered = {true}>
-                <thead className="table-border">
-                    <tr>
-                        <th>name</th>
-                        <th>code</th>
-                        <th>diameter</th>
-                        <th>size</th>
-                        <th>angle</th>
-                        <th>Material</th>
-                        <th>Height</th>
-                        <th>Status</th>
-                        <th>Machine</th>
-                        <th>Date in</th>
-                        <th>Date out</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {data && data.map((item) => (
-                        <tr
-                            id={activeRow.includes(item._id) ? "selected" : "not-selected"}
-                            onClick= {() =>  {
-                                            setSelectedItemID([item._id]);
-                                            toggleActive(item._id);
-                                            }}
-                            key={item._id}>
-                            <td >{item.name}</td>
-                            <td >{item.code}</td>
-                            <td >{item.diameter}</td>
-                            <td >{item.size}</td>
-                            <td >{item.angle}</td>
-                            <td >{item.material && item.material}</td>
-                            <td >{item.height && item.height}</td>
-                            <td >{item.status && item.status}</td>
-                            <td >{item.machine && item.machine}</td>
-                            <td >{item.dateIn && item.dateIn.toString()}</td>
-                            <td >{item.dateOut && item.dateOut.toString()}</td>
-                            <td >{item.description && item.description}</td>
+            <div className="table-container">
+                <Table bordered = {true} className="table">
+                    <thead className="table-border">
+                        <tr>
+                            <div className="sticky">
+                                <th>name</th>
+                                <th>code</th>
+                            </div>
+                            <th>diameter</th>
+                            <th>size</th>
+                            <th>angle</th>
+                            <th>Material</th>
+                            <th>Height</th>
+                            <th>Status</th>
+                            <th>Machine</th>
+                            <th>Date in</th>
+                            <th>Date out</th>
+                            <th>Description</th>
                         </tr>
-                    ))}
-                </tbody>
-            </Table>
+                    </thead>
+                    <tbody>
+                        {data && data.map((item) => (
+                            <tr
+                                id={activeRow.includes(item._id) ? "selected" : "not-selected"}
+                                onClick= {() =>  {
+                                                setSelectedItemID([item._id]);
+                                                toggleActive(item._id);
+                                                }}
+                                key={item._id}>
+                                <div className="sticky">
+                                    <td className="sticky">{item.name}</td>
+                                    <td className="sticky">{item.code}</td>
+                                </div>
+                                <td >{item.diameter}</td>
+                                <td >{item.size}</td>
+                                <td >{item.angle}</td>
+                                <td >{item.material && item.material}</td>
+                                <td >{item.height && item.height}</td>
+                                <td >{item.status && item.status}</td>
+                                <td >{item.machine && item.machine}</td>
+                                <td >{item.dateIn && item.dateIn.toString()}</td>
+                                <td >{item.dateOut && item.dateOut.toString()}</td>
+                                <td >{item.description && item.description}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </Table>
+            </div>
+            
         </div>
     )
 }

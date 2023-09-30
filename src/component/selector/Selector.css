@@ -140,3 +140,36 @@ p.search-item-text {
     height: 41px;
     flex-shrink: 0;
 }
+
+.table-container {
+    display: block;
+    overflow-x: auto; /* Enable horizontal scrolling */
+    margin: 10px;
+}
+
+.table {
+    width: max-content; /* Ensure the table expands to fit its content */
+    white-space: nowrap; /* Prevent text from wrapping inside table cells */
+}
+
+
+.sticky {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background-color: #fff; /* Set the background color for the sticky columns */
+}
+
+
+.table th,
+.table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+}
+
+div.sticky th,
+div.sticky td {
+    width: 45px; /* Set your desired width here */
+    /* You can adjust the width value as needed */
+}
+
