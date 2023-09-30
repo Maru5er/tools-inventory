@@ -90,6 +90,7 @@ const Selector : React.FC = () => {
     }
 
     function JSONStringBuilder(value : string[]) : string | undefined {
+        console.log(value);
         if (value.length % 2 !== 0 || value.length === 0) {alert("invalid input"); return undefined;}
         let temp : string = "{}";
         for (let i = 0; i < value.length; i += 2){
@@ -123,7 +124,7 @@ const Selector : React.FC = () => {
         .then((parsedData) => {
             if (parameter !== "" && value !== "") generateTable();
             else getAllData();
-        }).catch((error) => {alert(error)});
+        }).catch((error) => {alert("error updating tool")});
     }
     
 
@@ -175,7 +176,7 @@ const Selector : React.FC = () => {
     } 
 
     useEffect(() => {
-        getAllData();
+        generateTable();
     },[]);
 
 
@@ -242,7 +243,11 @@ const Selector : React.FC = () => {
             
             <div className="update-container">
                 <p className="update-label">Update params</p>
-                <input type="text" name = "parameter" placeholder="parameter" className="update-input-box"/>
+                <input type="text" name = "parameter" placeholder="parameter" className="update-input-box" onChange={
+                    (e) => {
+                        setUpdateParam(e.target.value);
+                    }
+                }/>
                 <button className="update-button" onClick={() => {
                     updateTool();
                 }}>Update</button>

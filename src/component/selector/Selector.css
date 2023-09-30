@@ -45,18 +45,19 @@ th, td {
     background: #D9D9D9;
 }
 
-.search-item-text {
+p.search-item-text {
     width: 59px;
-    height: 15px;
+    height: 5px;
     flex-shrink: 0;
-    font-size: 12;
-    margin: 10 !important;
+    margin-block-start: 10px;
+    margin-block-end: 15px;
 }
 .search-item {
     width: 94px;
     height: 15px;
     flex-shrink: 0;
 }
+
 
 .add-button {
     width: 90px;
